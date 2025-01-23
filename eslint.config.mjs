@@ -19,6 +19,12 @@ const eslintConfig = [
     },
   },
   eslintConfigPrettier,
+  {
+    rules: {
+      'no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+    }
+  }
 ]
 
 export default eslintConfig
