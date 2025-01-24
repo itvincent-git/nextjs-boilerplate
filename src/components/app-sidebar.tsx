@@ -1,58 +1,82 @@
-import { Calendar, Home, Inbox, Layout, Search, Settings } from 'lucide-react'
+import * as React from 'react'
 
+import { SearchForm } from '@/components/search-form'
+import { VersionSwitcher } from '@/components/version-switcher'
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from '@/components/ui/sidebar'
-import Link from 'next/link'
 
-// Menu items.
-const items = [
-  {
-    title: 'Home',
-    url: '/',
-    icon: Home,
-  },
-  {
-    title: 'Flex',
-    url: '/flex',
-    icon: Layout,
-  },
-  {
-    title: 'Grid',
-    url: '/grid',
-    icon: Layout,
-  },
-]
+// This is sample data.
+const data = {
+  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
+  navMain: [
+    {
+      title: 'Getting Started',
+      url: '#',
+      items: [
+        {
+          title: 'Home',
+          url: '/',
+        },
+      ],
+    },
+    {
+      title: 'Layouts',
+      url: '#',
+      items: [
+        {
+          title: 'Flex',
+          url: '/flex',
+        },
+        {
+          title: 'Grid',
+          url: '/grid',
+          isActive: false,
+        },
+      ],
+    },
+  ],
+}
 
-export function AppSidebar() {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar>
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <VersionSwitcher
+          versions={data.versions}
+          defaultVersion={data.versions[0]}
+        />
+        <SearchForm />
+      </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* We create a SidebarGroup for each parent. */}
+        {data.navMain.map((item) => (
+          <SidebarGroup key={item.title}>
+            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {item.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={item.isActive}>
+                      <a href={item.url}>{item.title}</a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
+      <SidebarRail />
     </Sidebar>
   )
 }

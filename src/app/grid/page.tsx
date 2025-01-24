@@ -1,9 +1,10 @@
+import MainContainer from '@/components/main-container'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 
 export default function Page() {
   return (
-    <div className="w-full">
+    <MainContainer>
       <h2 className="mb-4 text-xl font-bold">Grid</h2>
 
       <h2 className="text-lg font-bold">grid-cols-</h2>
@@ -44,6 +45,6 @@ export default function Page() {
         <Button variant="outline">E</Button>
         <Button variant="outline">F</Button>
       </div>
-    </div>
+    </MainContainer>
   )
 }
