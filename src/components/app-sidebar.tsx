@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Layout, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, Layout, Search, Settings } from 'lucide-react'
 
 import {
   Sidebar,
@@ -9,21 +9,26 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from '@/components/ui/sidebar'
+import Link from 'next/link'
 
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "/",
+    title: 'Home',
+    url: '/',
     icon: Home,
   },
   {
-    title: "XLayout",
-    url: "/xlayout",
+    title: 'Flex',
+    url: '/flex',
     icon: Layout,
-  }
+  },
+  {
+    title: 'Grid',
+    url: '/grid',
+    icon: Layout,
+  },
 ]
 
 export function AppSidebar() {
