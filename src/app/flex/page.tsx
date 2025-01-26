@@ -63,6 +63,23 @@ export default function Page() {
         </Button>
         <Button variant="outline">C</Button>
       </div>
+
+      <h2 className="text-lg font-bold">place-content-</h2>
+      <p className="mt-6 text-base/7 text-gray-700">
+        Utilities for controlling how content is justified and aligned at the
+        same time. Class
+      </p>
+      <div className="flex h-32 flex-wrap place-content-center bg-neutral-100">
+        <Button variant="outline" className="w-2/5">
+          A
+        </Button>
+        <Button variant="outline" className="w-2/5">
+          B
+        </Button>
+        <Button variant="outline" className="w-2/5">
+          C
+        </Button>
+      </div>
     </MainContainer>
   )
 }

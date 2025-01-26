@@ -51,10 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
+        <span className="text-center text-xl font-bold">Next Boilerplate</span>
         <SearchForm />
       </SidebarHeader>
       <SidebarContent>
