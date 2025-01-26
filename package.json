@@ -78,8 +78,8 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,css,scss}": [
-      "pnpm lint --fix --dir src"
+    "{src,lib}/*.{js,jsx,ts,tsx,css,scss}": [
+      "pnpm lint --fix"
     ]
   }
 }
