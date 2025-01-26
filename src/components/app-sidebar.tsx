@@ -42,6 +42,10 @@ const data = {
           url: '/grid',
           isActive: false,
         },
+        {
+          title: 'Position',
+          url: '/position',
+        },
       ],
     },
   ],
