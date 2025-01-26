@@ -7,15 +7,15 @@ export default function Page() {
       <h1 className="text-2xl font-bold">Flex</h1>
 
       <h2 className="text-lg font-bold">justify-content</h2>
-      <div className="flex h-32 justify-center bg-blue-100">
+      <div className="flex h-32 justify-center bg-neutral-100">
         <Button variant="outline">A</Button>
         <Button variant="outline">B</Button>
       </div>
-      <div className="flex h-32 justify-end bg-blue-100">
+      <div className="flex h-32 justify-end bg-neutral-100">
         <Button variant="outline">A</Button>
         <Button variant="outline">B</Button>
       </div>
-      <div className="flex h-32 justify-between bg-blue-100">
+      <div className="flex h-32 justify-between bg-neutral-100">
         <Button variant="outline">A</Button>
         <Button variant="outline">B</Button>
         <Button variant="outline">C</Button>
@@ -26,7 +26,7 @@ export default function Page() {
         Utilities for controlling how rows are positioned in multi-row flex and
         grid containers.
       </p>
-      <div className="flex h-32 flex-wrap content-center bg-blue-100">
+      <div className="flex h-32 flex-wrap content-center bg-neutral-100">
         <Button variant="outline" className="w-2/5">
           A
         </Button>
@@ -43,7 +43,7 @@ export default function Page() {
         Utilities for controlling how flex and grid items are positioned along a
         container&apos;s cross axis.
       </p>
-      <div className="flex h-32 items-end bg-blue-100">
+      <div className="flex h-32 items-end bg-neutral-100">
         <Button variant="outline">A</Button>
         <Button variant="outline" className="h-16">
           B
@@ -56,7 +56,7 @@ export default function Page() {
         Utilities for controlling how an individual flex or grid item is
         positioned along its container&apos;s cross axis.
       </p>
-      <div className="flex h-32 bg-blue-100">
+      <div className="flex h-32 bg-neutral-100">
         <Button variant="outline">A</Button>
         <Button variant="outline" className="h-16 self-end">
           B
