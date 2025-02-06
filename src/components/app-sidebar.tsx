@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import { SearchForm } from '@/components/search-form'
-import { VersionSwitcher } from '@/components/version-switcher'
 import {
   Sidebar,
   SidebarContent,
@@ -14,36 +13,37 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/routing'
 
 // This is sample data.
 const data = {
-  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
   navMain: [
     {
-      title: 'Getting Started',
+      title: 'index',
       url: '#',
       items: [
         {
-          title: 'Home',
+          title: 'home',
           url: '/',
         },
       ],
     },
     {
-      title: 'Layouts',
+      title: 'layouts',
       url: '#',
       items: [
         {
-          title: 'Flex',
+          title: 'flex',
           url: '/flex',
         },
         {
-          title: 'Grid',
+          title: 'grid',
           url: '/grid',
           isActive: false,
         },
         {
-          title: 'Position',
+          title: 'position',
           url: '/position',
         },
       ],
@@ -52,6 +52,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const t = useTranslations('sidebar')
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -62,13 +64,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+            <SidebarGroupLabel>{t(item.title)}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild>
+                      <button>
+                        <Link href={item.url}>{t(item.title)}</Link>
+                      </button>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

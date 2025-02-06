@@ -20,7 +20,7 @@ export default function Page() {
           left/right/top/bottom/z-index set then there will be no effect on that
           element.
         </div>
-        <div className="absolute bottom-0 right-0 h-24 w-2/5 overflow-hidden bg-red-100 p-4">
+        <div className="absolute bottom-0 right-0 h-24 w-2/5 overflow-hidden bg-red-100 p-4`">
           absolute:the element is removed from the flow of the document and
           other elements will behave as if it’s not even there whilst all the
           other positional properties will work on it.
