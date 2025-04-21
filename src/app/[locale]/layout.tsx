@@ -19,8 +19,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
-import { getMessages } from 'next-intl/server'
-import { NextIntlClientProvider } from 'next-intl'
+import { getMessages, setRequestLocale } from 'next-intl/server'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -44,46 +44,53 @@ export default async function RootLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
-  const { locale } = await params
+  // const { locale } = await params
+  // // Ensure that the incoming `locale` is valid
+  // if (!routing.locales.includes(locale as any)) {
+  //   notFound()
+  // }
+
+  // // Providing all messages to the client
+  // // side is the easiest way to get started
+  // const messages = await getMessages()
+
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as any)) {
+  const { locale } = await params
+  if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
 
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages()
+  // Enable static rendering
+  setRequestLocale(locale)
 
   return (
-    <html lang={locale}>
+    <html>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">Breadcrumb</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Breadcrumb Page</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </header>
-            <QueryProvider>
-              <NextIntlClientProvider messages={messages}>
-                {children}
-              </NextIntlClientProvider>
-            </QueryProvider>
-          </SidebarInset>
-        </SidebarProvider>
+        <NextIntlClientProvider locale={locale}>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mr-2 h-4" />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem className="hidden md:block">
+                      <BreadcrumbLink href="#">Breadcrumb</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="hidden md:block" />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>Breadcrumb Page</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </header>
+              <QueryProvider>{children}</QueryProvider>
+            </SidebarInset>
+          </SidebarProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

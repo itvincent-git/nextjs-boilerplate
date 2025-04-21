@@ -48,6 +48,16 @@ const data = {
         },
       ],
     },
+    {
+      title: 'Data fetching',
+      url: '#',
+      items: [
+        {
+          title: 'ISR',
+          url: '/isr',
+        },
+      ]
+    }
   ],
 }
 

@@ -5,6 +5,8 @@
     "home": "Home",
     "flex": "Flex",
     "grid": "Grid",
-    "position": "Position"
+    "position": "Position",
+    "Data fetching": "Data fetching",
+    "ISR": "ISR"
   }
 }
