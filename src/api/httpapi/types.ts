@@ -1,5 +1,5 @@
 interface Post {
   id: string
-  title: string
-  content: string
+  task_name: string
+  task_description: string
 }

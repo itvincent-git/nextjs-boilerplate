@@ -52,7 +52,7 @@ export default async function Page({
                   {post.id}
                 </span>
                 <h2 className="line-clamp-1 text-lg font-medium text-gray-900">
-                  {post.title}
+                  {post.task_description}
                 </h2>
               </div>
             </li>
