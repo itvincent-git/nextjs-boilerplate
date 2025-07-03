@@ -1,11 +1,7 @@
+import { httpapi } from '@/api/httpapi'
 import { routing } from '@/i18n/routing'
+import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 import { setRequestLocale } from 'next-intl/server'
-
-interface Post {
-  id: string
-  title: string
-  content: string
-}
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.
@@ -26,12 +22,9 @@ export default async function Page({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  // Enable static rendering
-  setRequestLocale(locale)
+  setupRequestLocaleAndHttpConfig(locale)
 
-  const posts: Post[] = await fetch(
-    'https://jsonplaceholder.typicode.com/todos',
-  ).then((res) => res.json())
+  const posts: Post[] = await httpapi.todos()
 
   console.info(
     'ISR page rendered at',
