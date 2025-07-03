@@ -24,13 +24,8 @@ export default async function Page({
   const { locale } = await params
   setupRequestLocaleAndHttpConfig(locale)
 
-  const posts: Post[] = await httpapi.todos()
+  const posts: Todo[] = await httpapi.todos()
 
-  console.info(
-    'ISR page rendered at',
-    new Date().toISOString(),
-    (await params).locale,
-  )
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
