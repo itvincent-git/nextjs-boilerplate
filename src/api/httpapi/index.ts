@@ -29,4 +29,11 @@ export const httpapi = {
     http.get<ProductsResponse>('/products', {
       params: { limit: 20 },
     }),
+
+  /**
+   * product detail
+   * @param id product id
+   * @returns
+   */
+  product: (id: string) => http.get<Product>(`/products/${id}`),
 }

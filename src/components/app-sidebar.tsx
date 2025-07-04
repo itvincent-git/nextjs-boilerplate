@@ -56,6 +56,10 @@ const data = {
           title: 'ISR',
           url: '/isr',
         },
+        {
+          title: 'Paging',
+          url: '/paging',
+        },
       ]
     }
   ],
