@@ -2,6 +2,7 @@ import { httpapi } from '@/api/httpapi'
 import { Link, routing } from '@/i18n/routing'
 import http from '@/lib/api-client'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
+import dayjs from 'dayjs'
 
 // Next.js will invalidate the cache when a
 // request comes in, at most once every 60 seconds.
@@ -33,7 +34,7 @@ export default async function Page({
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold text-gray-900">Post List</h1>
           <p className="text-sm text-gray-600">
-            Last updated: {new Date().toISOString()}
+            Last updated: {dayjs().toISOString()}
           </p>
           <p className="mt-2 text-base text-gray-700">
             This page demonstrates Incremental Static Regeneration (ISR). The

@@ -1,6 +1,7 @@
 import { httpapi } from '@/api/httpapi'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 import Image from 'next/image'
+import dayjs from 'dayjs'
 
 type Props = {
   params: {
@@ -93,7 +94,7 @@ export default async function Page({ params }: Props) {
               <p className="mt-2">{review.comment}</p>
               <div className="mt-2 text-sm text-gray-500">
                 <span>{review.reviewerName}</span> -{' '}
-                <span>{new Date(review.date).toLocaleDateString()}</span>
+                <span>{dayjs(review.date).format('DD/MM/YYYY')}</span>
               </div>
             </div>
           ))}

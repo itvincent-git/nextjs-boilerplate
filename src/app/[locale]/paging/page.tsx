@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default async function Page({ params }: Props) {
-  const { locale } = params
+  const { locale } = await params
   setupRequestLocaleAndHttpConfig(locale)
   const { products } = await httpapi.products()
 
