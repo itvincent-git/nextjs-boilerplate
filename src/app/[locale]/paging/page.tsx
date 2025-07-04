@@ -23,7 +23,7 @@ export default async function Page({ params }: Props) {
             <p className="mt-2">{product.description}</p>
             <div className="mt-4">
               <Link
-                href={`/${locale}/products/${product.id}`}
+                href={`/${locale}/paging/${product.id}`}
                 className="text-blue-500 hover:underline"
               >
                 View Details
