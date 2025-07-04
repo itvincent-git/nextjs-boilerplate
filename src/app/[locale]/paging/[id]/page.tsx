@@ -1,5 +1,6 @@
 import { httpapi } from '@/api/httpapi'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
+import Image from 'next/image'
 
 type Props = {
   params: {
@@ -25,8 +26,11 @@ export default async function Page({ params }: Props) {
         <p className="text-lg">{product.description}</p>
         <div className="flex items-center space-x-2">
           <span className="font-semibold">Tags:</span>
-          {product.tags.map(tag => (
-            <span key={tag} className="px-2 py-1 text-sm bg-gray-200 rounded-full">
+          {product.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full bg-gray-200 px-2 py-1 text-sm"
+            >
               {tag}
             </span>
           ))}
@@ -35,7 +39,8 @@ export default async function Page({ params }: Props) {
           <span className="font-semibold">Price:</span> ${product.price}
         </div>
         <div>
-          <span className="font-semibold">Discount:</span> {product.discountPercentage}%
+          <span className="font-semibold">Discount:</span>{' '}
+          {product.discountPercentage}%
         </div>
         <div>
           <span className="font-semibold">Rating:</span> {product.rating}
@@ -53,44 +58,65 @@ export default async function Page({ params }: Props) {
           <span className="font-semibold">Weight:</span> {product.weight}g
         </div>
         <div>
-          <span className="font-semibold">Dimensions:</span> {product.dimensions.width} x {product.dimensions.height} x {product.dimensions.depth}
+          <span className="font-semibold">Dimensions:</span>{' '}
+          {product.dimensions.width} x {product.dimensions.height} x{' '}
+          {product.dimensions.depth}
         </div>
         <div>
-          <span className="font-semibold">Warranty:</span> {product.warrantyInformation}
+          <span className="font-semibold">Warranty:</span>{' '}
+          {product.warrantyInformation}
         </div>
         <div>
-          <span className="font-semibold">Shipping:</span> {product.shippingInformation}
+          <span className="font-semibold">Shipping:</span>{' '}
+          {product.shippingInformation}
         </div>
         <div>
-          <span className="font-semibold">Availability:</span> {product.availabilityStatus}
+          <span className="font-semibold">Availability:</span>{' '}
+          {product.availabilityStatus}
         </div>
         <div>
-          <span className="font-semibold">Return Policy:</span> {product.returnPolicy}
+          <span className="font-semibold">Return Policy:</span>{' '}
+          {product.returnPolicy}
         </div>
         <div>
-          <span className="font-semibold">Minimum Order:</span> {product.minimumOrderQuantity}
+          <span className="font-semibold">Minimum Order:</span>{' '}
+          {product.minimumOrderQuantity}
         </div>
         <div>
-          <h2 className="text-2xl font-bold mt-8">Reviews</h2>
+          <h2 className="mt-8 text-2xl font-bold">Reviews</h2>
           {product.reviews.map((review, index) => (
-            <div key={index} className="border-t mt-4 pt-4">
+            <div key={index} className="mt-4 border-t pt-4">
               <div className="flex items-center space-x-2">
                 <span className="font-semibold">Rating:</span>
                 <span>{review.rating}</span>
               </div>
               <p className="mt-2">{review.comment}</p>
-              <div className="text-sm text-gray-500 mt-2">
-                <span>{review.reviewerName}</span> - <span>{new Date(review.date).toLocaleDateString()}</span>
+              <div className="mt-2 text-sm text-gray-500">
+                <span>{review.reviewerName}</span> -{' '}
+                <span>{new Date(review.date).toLocaleDateString()}</span>
               </div>
             </div>
           ))}
         </div>
         <div>
-          <img src={product.thumbnail} alt={product.title} className="w-full h-auto mt-8" />
+          <Image
+            src={product.thumbnail}
+            alt={product.title}
+            className="mt-8"
+            width={200}
+            height={200}
+          />
         </div>
-        <div className="grid grid-cols-3 gap-4 mt-8">
+        <div className="mt-8 grid grid-cols-3 gap-4">
           {product.images.map((image, index) => (
-            <img key={index} src={image} alt={`${product.title} image ${index + 1}`} className="w-full h-auto" />
+            <Image
+              key={index}
+              src={image}
+              alt={`${product.title} image ${index + 1}`}
+              className="h-auto w-full"
+              width={500}
+              height={500}
+            />
           ))}
         </div>
       </div>
