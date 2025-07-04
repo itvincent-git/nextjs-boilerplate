@@ -12,15 +12,12 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
-type Props = {
-  params: {
-    id: string
-    locale: string
-  }
-}
-
-export default async function Page({ params }: Props) {
-  const { id, locale } = params
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>
+}) {
+  const { id, locale } = await params
   setupRequestLocaleAndHttpConfig(locale)
   const product = await httpapi.product(id)
 

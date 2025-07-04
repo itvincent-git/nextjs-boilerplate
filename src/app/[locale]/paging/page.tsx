@@ -10,9 +10,11 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-type Params = Promise<{ locale: string }>
-
-export default async function Page({ params }: { params: Params }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
   const { locale } = await params
   setupRequestLocaleAndHttpConfig(locale)
   const { products } = await httpapi.products()
