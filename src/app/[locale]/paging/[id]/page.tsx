@@ -2,6 +2,15 @@ import { httpapi } from '@/api/httpapi'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 import Image from 'next/image'
 import dayjs from 'dayjs'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 type Props = {
   params: {
@@ -11,7 +20,7 @@ type Props = {
 }
 
 export default async function Page({ params }: Props) {
-  const { id, locale } = await params
+  const { id, locale } = params
   setupRequestLocaleAndHttpConfig(locale)
   const product = await httpapi.product(id)
 
@@ -20,20 +29,21 @@ export default async function Page({ params }: Props) {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="space-y-4">
-        <h1 className="text-3xl font-bold">{product.title}</h1>
-        <div className="text-gray-600">ID: {product.id}</div>
+    <Card className="container m-2 p-4">
+      <CardHeader>
+        <CardTitle className="text-3xl font-bold">{product.title}</CardTitle>
+        <CardDescription className="text-gray-600">
+          ID: {product.id}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
         <p className="text-lg">{product.description}</p>
         <div className="flex items-center space-x-2">
           <span className="font-semibold">Tags:</span>
           {product.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-gray-200 px-2 py-1 text-sm"
-            >
+            <Badge key={tag} variant="outline">
               {tag}
-            </span>
+            </Badge>
           ))}
         </div>
         <div>
@@ -83,20 +93,25 @@ export default async function Page({ params }: Props) {
           <span className="font-semibold">Minimum Order:</span>{' '}
           {product.minimumOrderQuantity}
         </div>
+        <Separator />
         <div>
           <h2 className="mt-8 text-2xl font-bold">Reviews</h2>
           {product.reviews.map((review, index) => (
-            <div key={index} className="mt-4 border-t pt-4">
-              <div className="flex items-center space-x-2">
-                <span className="font-semibold">Rating:</span>
-                <span>{review.rating}</span>
-              </div>
-              <p className="mt-2">{review.comment}</p>
-              <div className="mt-2 text-sm text-gray-500">
+            <Card key={index} className="mt-4 pt-4">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <span className="font-semibold">Rating:</span>
+                  <span>{review.rating}</span>
+                </CardTitle>
+                <CardDescription className="mt-2">
+                  {review.comment}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="mt-2 text-sm text-gray-500">
                 <span>{review.reviewerName}</span> -{' '}
                 <span>{dayjs(review.date).format('DD/MM/YYYY')}</span>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
         <div>
@@ -120,7 +135,7 @@ export default async function Page({ params }: Props) {
             />
           ))}
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
