@@ -1,5 +1,19 @@
-interface Todo {
-  id: string
-  task_name: string
-  task_description: string
+interface Post {
+  id: number
+  title: string
+  body: string
+  tags: string[]
+  reactions: {
+    likes: number
+    dislikes: number
+  }
+  views: number
+  userId: number
+}
+
+interface PostsResponse {
+  posts: Post[]
+  total: number
+  skip: number
+  limit: number
 }

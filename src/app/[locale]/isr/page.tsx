@@ -1,5 +1,6 @@
 import { httpapi } from '@/api/httpapi'
 import { Link, routing } from '@/i18n/routing'
+import http from '@/lib/api-client'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 
 // Next.js will invalidate the cache when a
@@ -23,13 +24,14 @@ export default async function Page({
   const { locale } = await params
   setupRequestLocaleAndHttpConfig(locale)
 
-  const posts: Todo[] = await httpapi.todos()
+  const data = await httpapi.posts()
+  const posts = data.posts
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">Todo List</h1>
+          <h1 className="mb-4 text-4xl font-bold text-gray-900">Post List</h1>
           <p className="text-sm text-gray-600">
             Last updated: {new Date().toISOString()}
           </p>
@@ -38,7 +40,7 @@ export default async function Page({
             content is revalidated every 60 seconds.
           </p>
           <p className="mt-2 text-sm text-gray-500">
-            Click on a todo item to view its details.
+            Click on a post item to view its details.
           </p>
         </div>
 
@@ -54,7 +56,7 @@ export default async function Page({
                     {post.id}
                   </span>
                   <h2 className="line-clamp-1 text-lg font-medium text-gray-900">
-                    {post.task_name}
+                    {post.title}
                   </h2>
                 </div>
               </Link>
