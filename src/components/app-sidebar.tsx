@@ -30,25 +30,6 @@ const data = {
       ],
     },
     {
-      title: 'layouts',
-      url: '#',
-      items: [
-        {
-          title: 'flex',
-          url: '/flex',
-        },
-        {
-          title: 'grid',
-          url: '/grid',
-          isActive: false,
-        },
-        {
-          title: 'position',
-          url: '/position',
-        },
-      ],
-    },
-    {
       title: 'Data fetching',
       url: '#',
       items: [
