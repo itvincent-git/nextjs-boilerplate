@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.dummyjson.com',
       },
     ],
+    formats: ['image/webp'], // exclude 'image/avif' for performance reasons
   },
 }
 

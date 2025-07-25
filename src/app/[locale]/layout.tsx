@@ -22,6 +22,9 @@ import { notFound } from 'next/navigation'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import Script from 'next/script'
+import { ApiClientProvider } from '@/components/api-client-provider'
+import henv from '@/lib/henv'
+import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -59,24 +62,11 @@ export default async function RootLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
-  // const { locale } = await params
-  // // Ensure that the incoming `locale` is valid
-  // if (!routing.locales.includes(locale as any)) {
-  //   notFound()
-  // }
-
-  // // Providing all messages to the client
-  // // side is the easiest way to get started
-  // const messages = await getMessages()
-
-  // Ensure that the incoming `locale` is valid
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
-
-  // Enable static rendering
-  setRequestLocale(locale)
+  setupRequestLocaleAndHttpConfig(locale)
 
   return (
     <html>
@@ -85,27 +75,34 @@ export default async function RootLayout({
       >
         <ScriptLayout />
         <NextIntlClientProvider locale={locale}>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">Breadcrumb</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Breadcrumb Page</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </header>
-              <QueryProvider>{children}</QueryProvider>
-            </SidebarInset>
-          </SidebarProvider>
+          <ApiClientProvider
+            config={{
+              baseUrl: henv('X_HTTP_BASE') || '',
+              headers: { 'Accept-Language': locale },
+            }}
+          >
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                  <SidebarTrigger className="-ml-1" />
+                  <Separator orientation="vertical" className="mr-2 h-4" />
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem className="hidden md:block">
+                        <BreadcrumbLink href="#">Breadcrumb</BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator className="hidden md:block" />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>Breadcrumb Page</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </header>
+                <QueryProvider>{children}</QueryProvider>
+              </SidebarInset>
+            </SidebarProvider>
+          </ApiClientProvider>
         </NextIntlClientProvider>
       </body>
     </html>

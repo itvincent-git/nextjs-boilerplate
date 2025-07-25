@@ -1,10 +1,30 @@
-// api-client.ts - A robust API client for Next.js server components
+// api-client.ts - A robust API client for Next.js applications
 
 import { cache } from 'react'
 import henv from '@/lib/henv'
 
-const getDefaultHeaders = cache(() => ({}) as Record<string, string>)
-const getBaseUrl = cache(() => ({ value: '' }))
+// This function creates a cache that works on both server and client.
+// On the server, it uses React's `cache` for request-scoped caching.
+// On the client, it uses a simple object for global caching.
+function createCache<T extends object>(factory: () => T): () => T {
+  let clientCache: T | null = null
+
+  if (typeof window === 'undefined') {
+    // Server-side: use React's cache for request-scoping
+    return cache(factory)
+  } else {
+    // Client-side: use a simple singleton pattern
+    return () => {
+      if (!clientCache) {
+        clientCache = factory()
+      }
+      return clientCache
+    }
+  }
+}
+
+const getDefaultHeaders = createCache(() => ({}) as Record<string, string>)
+const getBaseUrl = createCache(() => ({ value: '' }))
 
 /**
  * Configuration options for API requests
@@ -188,7 +208,6 @@ async function request<T = any>(
       method,
       headers: {
         'Content-Type': 'application/json',
-        node: 'camel',
         ...defaultHeaders,
         ...headers,
       },
@@ -237,11 +256,12 @@ async function request<T = any>(
  */
 export const http = {
   isDebugHttpLog: henv('X_DEBUG_HTTP_LOG') !== '0', //defalt enable log, 1: enable debug log, 0: disable debug log
-  httpLogSlowTime: parseInt(henv('X_HTTP_LOG_SLOW_TIME')) || 500, //defalt 500ms slow log threshold
+  httpLogSlowTime: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '500'), //defalt 500ms slow log threshold
 
   /**
-   * Configure default headers for all requests
-   * Only effect on server components
+   * Configure default headers for all requests.
+   * On the server, this is request-scoped.
+   * On the client, this is a global setting.
    */
   setDefaultHeaders(headers: Record<string, string>) {
     const defaultHeaders = getDefaultHeaders()
@@ -253,8 +273,9 @@ export const http = {
   },
 
   /**
-   * Add a single default header
-   * Only effect on server components
+   * Add a single default header.
+   * On the server, this is request-scoped.
+   * On the client, this is a global setting.
    */
   setDefaultHeader(name: string, value: string) {
     const defaultHeaders = getDefaultHeaders()
@@ -263,8 +284,9 @@ export const http = {
   },
 
   /**
-   * Set default base URL for all requests
-   * Only effect on server components
+   * Set default base URL for all requests.
+   * On the server, this is request-scoped.
+   * On the client, this is a global setting.
    */
   setBaseUrl(url: string) {
     const baseUrl = getBaseUrl()
