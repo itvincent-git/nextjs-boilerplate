@@ -25,9 +25,9 @@ export const httpapi = {
    * product list
    * @returns
    */
-  products: () =>
+  products: (skip: number = 0, limit: number = 20) =>
     http.get<ProductsResponse>('/products', {
-      params: { limit: 20 },
+      params: { skip, limit },
     }),
 
   /**
