@@ -26,11 +26,6 @@ import { ApiClientProvider } from '@/components/api-client-provider'
 import henv from '@/lib/henv'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
-
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
@@ -70,9 +65,7 @@ export default async function RootLayout({
 
   return (
     <html>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistMono.variable} antialiased`}>
         <ScriptLayout />
         <NextIntlClientProvider locale={locale}>
           <ApiClientProvider
