@@ -27,6 +27,10 @@ const data = {
           title: 'home',
           url: '/',
         },
+        {
+          title: 'error',
+          url: '/error',
+        },
       ],
     },
     {
@@ -41,8 +45,8 @@ const data = {
           title: 'Paging',
           url: '/paging',
         },
-      ]
-    }
+      ],
+    },
   ],
 }
 

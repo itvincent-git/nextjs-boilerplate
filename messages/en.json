@@ -8,6 +8,7 @@
     "position": "Position",
     "Data fetching": "Data fetching",
     "ISR": "ISR",
-    "Paging": "Paging"
+    "Paging": "Paging",
+    "error": "Error"
   }
 }

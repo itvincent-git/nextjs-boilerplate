@@ -8,6 +8,7 @@
     "position": "定位",
     "Data fetching": "数据获取",
     "ISR": "增量静态再生",
-    "Paging": "分页"
+    "Paging": "分页",
+    "error": "错误"
   }
 }
