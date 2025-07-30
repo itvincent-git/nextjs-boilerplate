@@ -1,13 +1,14 @@
 'use client'
 
-import { http } from '@/lib/api-client'
+import { http, RequestOptionsConfig } from '@/lib/api-client'
 import React, { ReactNode, useEffect } from 'react'
 
 interface ApiClientProviderProps {
   children: ReactNode
   config: {
-    baseUrl: string
-    headers: Record<string, string>
+    baseUrl?: string
+    headers?: Record<string, string>
+    requestOptionsConfig?: RequestOptionsConfig
   }
 }
 
@@ -21,6 +22,9 @@ export function ApiClientProvider({
     }
     if (config.headers) {
       http.setDefaultHeaders(config.headers)
+    }
+    if (config.requestOptionsConfig) {
+      http.setDefaultRequestOptionsConfig(config.requestOptionsConfig)
     }
   }, [config])
 

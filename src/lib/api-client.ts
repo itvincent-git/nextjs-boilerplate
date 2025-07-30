@@ -1,7 +1,6 @@
 // api-client.ts - A robust API client for Next.js applications
 
 import { cache } from 'react'
-import henv from '@/lib/henv'
 
 // This function creates a cache that works on both server and client.
 // On the server, it uses React's `cache` for request-scoped caching.
@@ -25,6 +24,9 @@ function createCache<T extends object>(factory: () => T): () => T {
 
 const getDefaultHeaders = createCache(() => ({}) as Record<string, string>)
 const getBaseUrl = createCache(() => ({ value: '' }))
+const getRequestOptionsConfig = createCache(
+  () => ({ logging: false, slowThreshold: 1000 }) as RequestOptionsConfig,
+)
 
 /**
  * Configuration options for API requests
@@ -38,9 +40,15 @@ export interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined | null>
   /** Additional headers to include with the request */
   headers?: Record<string, string>
-  /** Default headers to apply to every request (can be overridden) */
-  defaultHeaders?: Record<string, string>
-  /** Whether to log this request (default: true) */
+  /** Configuration options for the request */
+  config?: RequestOptionsConfig
+}
+
+/**
+ * Configuration options for request logging and slow request thresholds
+ */
+export interface RequestOptionsConfig {
+  /** Whether to log this request (default: false) */
   logging?: boolean
   /** Threshold in ms to consider a request "slow" for logging purposes (default: 1000ms) */
   slowThreshold?: number
@@ -88,6 +96,7 @@ function logRequest(
   url: string,
   startTime: number,
   endTime: number,
+  config: RequestOptionsConfig,
   status?: number,
   error?: Error,
 ) {
@@ -111,12 +120,12 @@ function logRequest(
       }),
     )
   } else {
-    if (http.isDebugHttpLog) {
+    if (config.logging) {
       console.log(JSON.stringify(baseLog))
     }
 
     // Log slow requests separately
-    if (duration > http.httpLogSlowTime) {
+    if (duration > (config.slowThreshold || 1000)) {
       console.warn(
         JSON.stringify({
           ...baseLog,
@@ -187,12 +196,15 @@ async function request<T = any>(
     baseUrl = '',
     params,
     timeout = 30000,
-    logging = true,
-    slowThreshold = 1000,
+    config = {},
     headers = {},
-    defaultHeaders = {},
     ...fetchOptions
   } = options
+
+  const requestOptionsConfig = {
+    ...getRequestOptionsConfig(),
+    ...config,
+  }
 
   // Build full URL
   const url = appendQueryParams(`${baseUrl}${endpoint}`, params)
@@ -208,7 +220,6 @@ async function request<T = any>(
       method,
       headers: {
         'Content-Type': 'application/json',
-        ...defaultHeaders,
         ...headers,
       },
       timeout,
@@ -230,23 +241,42 @@ async function request<T = any>(
 
     // Handle successful responses
     if (response.ok) {
-      if (logging) {
-        logRequest(method, url, startTime, Date.now(), status)
-      }
+      logRequest(
+        method,
+        url,
+        startTime,
+        Date.now(),
+        requestOptionsConfig,
+        status,
+      )
+
       return body as T
     }
 
     // Handle error responses
     const error = new ApiError(response, body)
-    if (logging) {
-      logRequest(method, url, startTime, Date.now(), status, error)
-    }
+
+    logRequest(
+      method,
+      url,
+      startTime,
+      Date.now(),
+      requestOptionsConfig,
+      status,
+      error,
+    )
+
     throw error
   } catch (error: any) {
-    if (logging) {
-      logRequest(method, url, startTime, Date.now(), status, error)
-    }
-    // Re-throw the error to be handled by the caller
+    logRequest(
+      method,
+      url,
+      startTime,
+      Date.now(),
+      requestOptionsConfig,
+      status,
+      error,
+    )
     throw error
   }
 }
@@ -255,9 +285,6 @@ async function request<T = any>(
  * HTTP client with method shortcuts and configurable default headers and base URL
  */
 export const http = {
-  isDebugHttpLog: henv('X_DEBUG_HTTP_LOG') !== '0', //defalt enable log, 1: enable debug log, 0: disable debug log
-  httpLogSlowTime: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '500'), //defalt 500ms slow log threshold
-
   /**
    * Configure default headers for all requests.
    * On the server, this is request-scoped.
@@ -291,6 +318,17 @@ export const http = {
   setBaseUrl(url: string) {
     const baseUrl = getBaseUrl()
     baseUrl.value = url
+    return this
+  },
+
+  /**
+   * Set default request options config for all requests.
+   * On the server, this is request-scoped.
+   * On the client, this is a global setting.
+   */
+  setDefaultRequestOptionsConfig(config: RequestOptionsConfig) {
+    const requestOptionsConfig = getRequestOptionsConfig()
+    Object.assign(requestOptionsConfig, config)
     return this
   },
 

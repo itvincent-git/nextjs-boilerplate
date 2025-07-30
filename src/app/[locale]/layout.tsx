@@ -72,6 +72,10 @@ export default async function RootLayout({
             config={{
               baseUrl: henv('X_HTTP_BASE') || '',
               headers: { 'Accept-Language': locale },
+              requestOptionsConfig: {
+                logging: true,
+                slowThreshold: 500,
+              },
             }}
           >
             <SidebarProvider>

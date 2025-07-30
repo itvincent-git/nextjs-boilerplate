@@ -1,6 +1,6 @@
-import http from '@/lib/api-client';
-import henv from '@/lib/henv';
-import { setRequestLocale } from 'next-intl/server';
+import http from '@/lib/api-client'
+import henv from '@/lib/henv'
+import { setRequestLocale } from 'next-intl/server'
 
 /**
  * 异步函数：设置请求的语言环境和HTTP配置
@@ -12,15 +12,20 @@ import { setRequestLocale } from 'next-intl/server';
  * @param locale 语言代码，表示要设置的语言环境
  */
 export async function setupRequestLocaleAndHttpConfig(locale: string) {
-    // Enable static rendering
-    setRequestLocale(locale);
+  // Enable static rendering
+  setRequestLocale(locale)
 
-    // 设置默认语言
-    http.setDefaultHeader('Accept-Language', locale);
-    // 设置基础URL, only for server component
-    http.setBaseUrl(
-        henv('X_HTTP_INTERNAL_BASE') !== undefined
-            ? henv('X_HTTP_INTERNAL_BASE')
-            : henv('X_HTTP_BASE')
-    );
+  // 设置默认语言
+  http.setDefaultHeader('Accept-Language', locale)
+  // 设置基础URL, only for server component
+  http.setBaseUrl(
+    henv('X_HTTP_INTERNAL_BASE') !== undefined
+      ? henv('X_HTTP_INTERNAL_BASE')
+      : henv('X_HTTP_BASE'),
+  )
+
+  http.setDefaultRequestOptionsConfig({
+    logging: henv('X_DEBUG_HTTP_LOG') !== '0', //defalt enable log, 1: enable debug log, 0: disable debug log
+    slowThreshold: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '1000'), //defalt 1000ms slow log threshold
+  })
 }
