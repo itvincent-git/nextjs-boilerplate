@@ -1,5 +1,4 @@
-import * as React from 'react'
-
+import { LocaleSwitcher } from '@/components/locale-switcher'
 import { SearchForm } from '@/components/search-form'
 import {
   Sidebar,
@@ -56,8 +55,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <span className="text-center text-xl font-bold">Next Boilerplate</span>
-        <SearchForm />
+        <div className="text-center text-xl font-bold">Next Boilerplate</div>
+        <LocaleSwitcher />
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
