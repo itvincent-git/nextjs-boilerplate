@@ -3,29 +3,26 @@ import henv from '@/lib/henv'
 import { setRequestLocale } from 'next-intl/server'
 
 /**
- * 异步函数：设置请求的语言环境和HTTP配置
- * 需要在所有httpapi请求之前调用此函数
+ * Async function: Sets the request locale and HTTP configuration.
+ * Should be called before all httpapi requests.
  *
- * 此函数用于在进行请求之前设置正确的语言环境和HTTP配置，以确保服务器能够根据请求的配置正确处理请求
- * 它首先设置请求的语言环境，然后配置HTTP请求的默认语言和基础URL
+ * This function sets the correct locale and HTTP configuration before making requests,
+ * ensuring the server can handle requests according to the provided settings.
+ * It first sets the request locale, then configures the default language and base URL for HTTP requests.
  *
- * @param locale 语言代码，表示要设置的语言环境
+ * @param locale Language code to set as the request locale.
  */
 export async function setupRequestLocaleAndHttpConfig(locale: string) {
   // Enable static rendering
   setRequestLocale(locale)
 
-  // 设置默认语言
+  // Set default language
   http.setDefaultHeader('Accept-Language', locale)
-  // 设置基础URL, only for server component
-  http.setBaseUrl(
-    henv('X_HTTP_INTERNAL_BASE') !== undefined
-      ? henv('X_HTTP_INTERNAL_BASE')
-      : henv('X_HTTP_BASE'),
-  )
+  // Set base URL, only for server component
+  http.setBaseUrl(henv('X_HTTP_INTERNAL_BASE') || henv('X_HTTP_BASE') || '')
 
   http.setDefaultRequestOptionsConfig({
     logging: parseInt(henv('X_HTTP_LOG_LEVEL') || '3'), // default to 3, 0: disable, 1: error, 3: error+slow, 10: all
-    slowThreshold: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '1000'), //defalt 1000ms slow log threshold
+    slowThreshold: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '1000'), // default 1000ms slow log threshold
   })
 }
