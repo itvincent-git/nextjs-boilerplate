@@ -19,8 +19,8 @@ export default function NotFound() {
 
       <body>
         <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto w-full max-w-lg">
-            <Card className="border-0 bg-white/80 shadow-xl backdrop-blur-sm">
+          <div className="mx-auto max-w-screen-xl">
+            <Card className="w-full border-0 bg-white/80 shadow-xl backdrop-blur-sm">
               <CardHeader className="space-y-6 text-center">
                 {/* Animated 404 with Badge */}
                 <div className="relative flex flex-col items-center space-y-4">
@@ -43,8 +43,9 @@ export default function NotFound() {
                   Oops! Page Not Found
                 </CardTitle>
                 <CardDescription className="text-lg leading-relaxed text-slate-600">
-                  The page you&apos;re looking for seems to have wandered off into
-                  the digital void. Don&apos;t worry, let&apos;s get you back on track!
+                  The page you&apos;re looking for seems to have wandered off
+                  into the digital void. Don&apos;t worry, let&apos;s get you
+                  back on track!
                 </CardDescription>
               </CardHeader>
 
@@ -67,15 +68,6 @@ export default function NotFound() {
                       Go Home
                     </Button>
                   </Link>
-                  {/* <Button 
-                    variant="outline" 
-                    size="lg"
-                    className="w-full sm:w-auto"
-                    onClick={() => window.history.back()}
-                  >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Go Back
-                  </Button> */}
                 </div>
 
                 {/* Decorative elements */}
