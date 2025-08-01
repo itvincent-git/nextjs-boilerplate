@@ -1,14 +1,10 @@
 {
   "sidebar": {
-    "layouts": "布局",
     "index": "索引",
     "home": "首页",
-    "flex": "弹性布局",
-    "grid": "网格布局",
-    "position": "定位",
-    "Data fetching": "数据获取",
     "ISR": "增量静态再生",
     "Paging": "分页",
+    "SWR": "SWR",
     "error": "错误"
   }
 }

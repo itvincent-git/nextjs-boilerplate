@@ -44,6 +44,10 @@ const data = {
           title: 'Paging',
           url: '/paging',
         },
+        {
+          title: 'SWR',
+          url: '/paging/swr',
+        },
       ],
     },
   ],

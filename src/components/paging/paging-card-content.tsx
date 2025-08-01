@@ -21,7 +21,7 @@ export default function PagingCardContent({
         <Card key={product.id} className="rounded-lg border p-4">
           <CardHeader>
             <CardTitle className="text-xl font-semibold">
-              {product.title}
+              {product.id}:{product.title}
             </CardTitle>
             <CardDescription className="mt-2">
               {product.description}
