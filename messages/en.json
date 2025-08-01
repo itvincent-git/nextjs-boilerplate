@@ -2,6 +2,7 @@
   "sidebar": {
     "index": "Index",
     "home": "Home",
+    "Data fetching": "Data fetching",
     "ISR": "ISR",
     "Paging": "Paging",
     "SWR": "SWR",

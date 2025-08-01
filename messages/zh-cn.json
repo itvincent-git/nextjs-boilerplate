@@ -2,6 +2,7 @@
   "sidebar": {
     "index": "索引",
     "home": "首页",
+    "Data fetching": "数据获取",
     "ISR": "增量静态再生",
     "Paging": "分页",
     "SWR": "SWR",
