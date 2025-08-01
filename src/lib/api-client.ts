@@ -25,7 +25,7 @@ function createCache<T extends object>(factory: () => T): () => T {
 const getDefaultHeaders = createCache(() => ({}) as Record<string, string>)
 const getBaseUrl = createCache(() => ({ value: '' }))
 const getRequestOptionsConfig = createCache(
-  () => ({ logging: false, slowThreshold: 1000 }) as RequestOptionsConfig,
+  () => ({ logging: 3, slowThreshold: 1000 }) as RequestOptionsConfig,
 )
 
 /**
@@ -48,8 +48,15 @@ export interface RequestOptions extends RequestInit {
  * Configuration options for request logging and slow request thresholds
  */
 export interface RequestOptionsConfig {
-  /** Whether to log this request (default: false) */
-  logging?: boolean
+  /**
+   * Logging level for this request.
+   * 0: No logging
+   * 1: Log only errors
+   * 3: Log errors and slow requests
+   * 10: Log all requests (errors, slow, and normal)
+   * (default: 3)
+   */
+  logging?: number
   /** Threshold in ms to consider a request "slow" for logging purposes (default: 1000ms) */
   slowThreshold?: number
 }
@@ -100,6 +107,11 @@ function logRequest(
   status?: number,
   error?: Error,
 ) {
+  const { logging = 0, slowThreshold = 1000 } = config
+  if (logging === 0) {
+    return
+  }
+
   const duration = endTime - startTime
   const timestamp = new Date().toISOString()
 
@@ -112,20 +124,22 @@ function logRequest(
   }
 
   if (error) {
-    console.error(
-      JSON.stringify({
-        ...baseLog,
-        error: error.message,
-        stack: error.stack,
-      }),
-    )
+    if (logging >= 1) {
+      console.error(
+        JSON.stringify({
+          ...baseLog,
+          error: error.message,
+          stack: error.stack,
+        }),
+      )
+    }
   } else {
-    if (config.logging) {
+    if (logging >= 10) {
       console.log(JSON.stringify(baseLog))
     }
 
     // Log slow requests separately
-    if (duration > (config.slowThreshold || 1000)) {
+    if (duration > slowThreshold && logging >= 2) {
       console.warn(
         JSON.stringify({
           ...baseLog,

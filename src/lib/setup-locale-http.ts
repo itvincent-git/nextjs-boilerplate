@@ -25,7 +25,7 @@ export async function setupRequestLocaleAndHttpConfig(locale: string) {
   )
 
   http.setDefaultRequestOptionsConfig({
-    logging: henv('X_DEBUG_HTTP_LOG') !== '0', //defalt enable log, 1: enable debug log, 0: disable debug log
+    logging: parseInt(henv('X_HTTP_LOG_LEVEL') || '3'), // default to 3, 0: disable, 1: error, 3: error+slow, 10: all
     slowThreshold: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '1000'), //defalt 1000ms slow log threshold
   })
 }

@@ -73,7 +73,7 @@ export default async function RootLayout({
               baseUrl: henv('X_HTTP_BASE') || '',
               headers: { 'Accept-Language': locale },
               requestOptionsConfig: {
-                logging: henv('X_DEBUG_HTTP_LOG') !== '0', //defalt enable log, 1: enable debug log, 0: disable debug log
+                logging: parseInt(henv('X_HTTP_LOG_LEVEL') || '3'), //defalt enable log, 1: enable debug log, 0: disable debug log
                 slowThreshold: parseInt(henv('X_HTTP_LOG_SLOW_TIME') || '1000'), //defalt 1000ms slow log threshold
               },
             }}
