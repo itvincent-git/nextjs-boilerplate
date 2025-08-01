@@ -3,10 +3,9 @@
  * @param key
  * @returns
  */
-const henv = (key: string): string => {
+const henv = (key: string): string | undefined => {
   const value =
     typeof window === 'undefined' ? process.env[key] : window['env'][key]
-  // console.info('henv ', key, '->', value);
   return value
 }
 
