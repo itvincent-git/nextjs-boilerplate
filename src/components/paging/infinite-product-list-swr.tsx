@@ -35,6 +35,7 @@ export default function InfiniteProductListSWR({
 
   const { ref, inView } = useInView({
     threshold: 0,
+    delay: 100,
   })
 
   const products = productsData ? productsData.flat() : []

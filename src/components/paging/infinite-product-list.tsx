@@ -14,6 +14,7 @@ export default function InfiniteProductList({
   const [hasMore, setHasMore] = useState(true)
   const { ref, inView } = useInView({
     threshold: 0,
+    delay: 100,
   })
 
   useEffect(() => {
