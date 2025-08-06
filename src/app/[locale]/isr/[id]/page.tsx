@@ -2,14 +2,11 @@ import { httpapi } from '@/api/httpapi'
 import http from '@/lib/api-client'
 import { setupRequestLocaleAndHttpConfig } from '@/lib/setup-locale-http'
 
-type Props = {
-  params: {
-    id: string
-    locale: string
-  }
-}
-
-export default async function Page({ params }: Props) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>
+}) {
   const { id, locale } = await params
   setupRequestLocaleAndHttpConfig(locale)
   const post = await httpapi.post(id)
@@ -26,8 +23,11 @@ export default async function Page({ params }: Props) {
         <p className="text-lg">{post.body}</p>
         <div className="flex items-center space-x-2">
           <span className="font-semibold">Tags:</span>
-          {post.tags.map(tag => (
-            <span key={tag} className="px-2 py-1 text-sm bg-gray-200 rounded-full">
+          {post.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full bg-gray-200 px-2 py-1 text-sm"
+            >
               {tag}
             </span>
           ))}
