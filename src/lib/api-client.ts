@@ -53,7 +53,8 @@ export interface RequestOptionsConfig {
    * 0: No logging
    * 1: Log only errors
    * 3: Log errors and slow requests
-   * 10: Log all requests (errors, slow, and normal)
+   * 7: Log errors, slow requests, and request details (headers & params).
+   * 10: Log all requests (errors, slow, normal) and request details.
    * (default: 3)
    */
   logging?: number
@@ -68,9 +69,9 @@ export class ApiError extends Error {
   status: number
   statusText: string
   url: string
-  body: any
+  body: unknown
 
-  constructor(response: Response, body?: any) {
+  constructor(response: Response, body?: unknown) {
     super(`API Error: ${response.status} ${response.statusText}`)
     this.name = 'ApiError'
     this.status = response.status
@@ -153,7 +154,10 @@ function logRequest(
 /**
  * Append query parameters to a URL
  */
-function appendQueryParams(url: string, params?: Record<string, any>): string {
+function appendQueryParams(
+  url: string,
+  params?: Record<string, string | number | boolean | undefined | null>,
+): string {
   if (!params) return url
 
   const searchParams = new URLSearchParams()
@@ -188,8 +192,8 @@ async function fetchWithTimeout(
       signal: controller.signal,
     })
     return response
-  } catch (error: any) {
-    if (error.name === 'AbortError') {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === 'AbortError') {
       throw new TimeoutError(url, timeout)
     }
     throw error
@@ -201,7 +205,7 @@ async function fetchWithTimeout(
 /**
  * Core request function
  */
-async function request<T = any>(
+async function request<T = unknown>(
   method: string,
   endpoint: string,
   options: RequestOptions = {},
@@ -223,6 +227,30 @@ async function request<T = any>(
   // Build full URL
   const url = appendQueryParams(`${baseUrl}${endpoint}`, params)
 
+  if (requestOptionsConfig.logging && requestOptionsConfig.logging >= 7) {
+    const logPayload: Record<string, any> = {
+      type: 'REQUEST_DETAILS',
+      timestamp: new Date().toISOString(),
+      method,
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      params,
+    }
+
+    if (method.toUpperCase() === 'POST' && fetchOptions.body) {
+      try {
+        logPayload.body = JSON.parse(fetchOptions.body as string)
+      } catch (e) {
+        logPayload.body = fetchOptions.body
+      }
+    }
+
+    console.log(JSON.stringify(logPayload))
+  }
+
   // Track request timing
   const startTime = Date.now()
   let status: number | undefined
@@ -242,7 +270,7 @@ async function request<T = any>(
     status = response.status
 
     // Parse response body
-    let body: any
+    let body: unknown
     const contentType = response.headers.get('content-type')
 
     if (contentType?.includes('application/json')) {
@@ -281,7 +309,12 @@ async function request<T = any>(
     )
 
     throw error
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof ApiError) {
+      throw error // Already logged
+    }
+
+    const e = error instanceof Error ? error : new Error(String(error))
     logRequest(
       method,
       url,
@@ -289,9 +322,41 @@ async function request<T = any>(
       Date.now(),
       requestOptionsConfig,
       status,
-      error,
+      e,
     )
     throw error
+  }
+}
+
+function serializeBody(
+  data: unknown,
+  headers: Record<string, string>,
+): BodyInit | undefined {
+  if (data === undefined || data === null) {
+    return undefined
+  }
+
+  const contentType =
+    Object.entries(headers).find(
+      ([key]) => key.toLowerCase() === 'content-type',
+    )?.[1] || ''
+
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    if (typeof data === 'object') {
+      return new URLSearchParams(data as any)
+    } else {
+      return String(data)
+    }
+  } else if (
+    typeof data === 'string' ||
+    data instanceof Blob ||
+    data instanceof ArrayBuffer ||
+    data instanceof FormData ||
+    data instanceof URLSearchParams
+  ) {
+    return data
+  } else {
+    return JSON.stringify(data)
   }
 }
 
@@ -348,7 +413,7 @@ export const http = {
 
   request,
 
-  get<T = any>(endpoint: string, options?: RequestOptions): Promise<T> {
+  get<T = unknown>(endpoint: string, options?: RequestOptions): Promise<T> {
     return request<T>('GET', endpoint, {
       baseUrl: getBaseUrl().value,
       ...options,
@@ -359,55 +424,64 @@ export const http = {
     })
   },
 
-  post<T = any>(
+  post<T = unknown>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions,
   ): Promise<T> {
+    const combinedHeaders = {
+      ...getDefaultHeaders(),
+      ...(options?.headers || {}),
+    }
+    const body = serializeBody(data, combinedHeaders)
+
     return request<T>('POST', endpoint, {
       baseUrl: getBaseUrl().value,
       ...options,
-      headers: {
-        ...getDefaultHeaders(),
-        ...(options?.headers || {}),
-      },
-      body: data ? JSON.stringify(data) : undefined,
+      headers: combinedHeaders,
+      body,
     })
   },
 
-  put<T = any>(
+  put<T = unknown>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions,
   ): Promise<T> {
+    const combinedHeaders = {
+      ...getDefaultHeaders(),
+      ...(options?.headers || {}),
+    }
+    const body = serializeBody(data, combinedHeaders)
+
     return request<T>('PUT', endpoint, {
       baseUrl: getBaseUrl().value,
       ...options,
-      headers: {
-        ...getDefaultHeaders(),
-        ...(options?.headers || {}),
-      },
-      body: data ? JSON.stringify(data) : undefined,
+      headers: combinedHeaders,
+      body,
     })
   },
 
-  patch<T = any>(
+  patch<T = unknown>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions,
   ): Promise<T> {
+    const combinedHeaders = {
+      ...getDefaultHeaders(),
+      ...(options?.headers || {}),
+    }
+    const body = serializeBody(data, combinedHeaders)
+
     return request<T>('PATCH', endpoint, {
       baseUrl: getBaseUrl().value,
       ...options,
-      headers: {
-        ...getDefaultHeaders(),
-        ...(options?.headers || {}),
-      },
-      body: data ? JSON.stringify(data) : undefined,
+      headers: combinedHeaders,
+      body,
     })
   },
 
-  delete<T = any>(endpoint: string, options?: RequestOptions): Promise<T> {
+  delete<T = unknown>(endpoint: string, options?: RequestOptions): Promise<T> {
     return request<T>('DELETE', endpoint, {
       baseUrl: getBaseUrl().value,
       ...options,
